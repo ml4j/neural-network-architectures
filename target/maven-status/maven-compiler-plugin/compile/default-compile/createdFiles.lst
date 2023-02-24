@@ -1,0 +1,15 @@
+org/ml4j/nn/architectures/inception/inceptionv4/modules/ReductionBDefinition.class
+org/ml4j/nn/architectures/inception/inceptionv4/modules/InceptionADefinition.class
+org/ml4j/nn/architectures/inception/inceptionv4/InceptionV4WeightsLoader.class
+org/ml4j/nn/architectures/inception/InceptionModuleDefinition.class
+org/ml4j/nn/architectures/inception/inceptionv4/modules/InceptionV4TailDefinition.class
+org/ml4j/nn/architectures/yolo/yolov2/YOLOv2Definition.class
+org/ml4j/nn/architectures/inception/inceptionv4/InceptionV4Definition.class
+org/ml4j/nn/architectures/inception/inceptionv4/modules/InceptionCDefinition.class
+org/ml4j/nn/architectures/inception/inceptionv4/modules/InceptionV4CustomTailDefinition.class
+org/ml4j/nn/architectures/inception/inceptionv4/modules/InceptionV4StemDefinition.class
+org/ml4j/nn/architectures/inception/inceptionv4/modules/ReductionADefinition.class
+org/ml4j/nn/architectures/inception/inceptionv4/InceptionV4WithoutTailDefinition.class
+org/ml4j/nn/architectures/inception/inceptionv4/modules/InceptionBDefinition.class
+org/ml4j/nn/architectures/yolo/yolov2/YOLOv2WeightsLoader.class
+org/ml4j/nn/architectures/inception/inceptionv4/UntrainedTailInceptionV4Definition.class

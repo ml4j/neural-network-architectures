@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InceptionBDefinition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">neural-network-architectures</a> &gt; <a href="index.source.html" class="el_package">org.ml4j.nn.architectures.inception.inceptionv4.modules</a> &gt; <span class="el_source">InceptionBDefinition.java</span></div><h1>InceptionBDefinition.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.ml4j.nn.architectures.inception.inceptionv4.modules;
+
+import org.ml4j.nn.activationfunctions.ActivationFunctionBaseType;
+import org.ml4j.nn.activationfunctions.ActivationFunctionProperties;
+import org.ml4j.nn.activationfunctions.ActivationFunctionType;
+import org.ml4j.nn.architectures.inception.InceptionModuleDefinition;
+import org.ml4j.nn.architectures.inception.inceptionv4.InceptionV4WeightsLoader;
+import org.ml4j.nn.components.NeuralComponent;
+import org.ml4j.nn.components.builders.componentsgraph.InitialComponents3DGraphBuilder;
+import org.ml4j.nn.components.factories.NeuralComponentFactory;
+import org.ml4j.nn.components.manytoone.PathCombinationStrategy;
+import org.ml4j.nn.neurons.Neurons3D;
+
+/**
+ * @author Michael Lavelle
+ */
+public class InceptionBDefinition implements InceptionModuleDefinition {
+
+	/**
+	 * Default serialization id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private InceptionV4WeightsLoader weightsLoader;
+	private int inceptionBModuleIndex;
+	private boolean withFreezeOut;
+
+<span class="nc" id="L43">	public InceptionBDefinition(InceptionV4WeightsLoader weightsLoader, int inceptionBModuleIndex) {</span>
+<span class="nc" id="L44">		this.inceptionBModuleIndex = inceptionBModuleIndex;</span>
+<span class="nc" id="L45">		this.weightsLoader = weightsLoader;</span>
+<span class="nc" id="L46">	}</span>
+
+	@Override
+	public Neurons3D getInputNeurons() {
+<span class="nc" id="L50">		return new Neurons3D(17, 17, 1024, false);</span>
+	}
+
+	@Override
+	public &lt;T extends NeuralComponent&lt;?&gt;&gt; InitialComponents3DGraphBuilder&lt;T&gt; createComponentGraph(
+			InitialComponents3DGraphBuilder&lt;T&gt; start, NeuralComponentFactory&lt;T&gt; neuralComponentFactory) {
+		
+<span class="nc" id="L57">		int initialComponentIndex = inceptionBModuleIndex * 10 + 44;</span>
+<span class="nc" id="L58">		return start</span>
+<span class="nc" id="L59">				.withParallelPaths().withPath()</span>
+<span class="nc" id="L60">				.withConvolutionalAxons(&quot;conv2d_&quot; + initialComponentIndex)</span>
+<span class="nc" id="L61">				.withConnectionWeights(weightsLoader.getConvolutionalLayerWeights(</span>
+						&quot;conv2d_&quot; + initialComponentIndex + &quot;_kernel0&quot;, 1, 1, 1024, 384))
+<span class="nc" id="L63">				.withFilterSize(1, 1).withFilterCount(384).withSamePadding()</span>
+<span class="nc" id="L64">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L65">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L66">				.withConnectionToNeurons(new Neurons3D(17, 17, 384, false)).withBatchNormAxons(&quot;batch_normalization_&quot; + initialComponentIndex).withBiasUnit()</span>
+<span class="nc" id="L67">				.withBeta(weightsLoader.getBatchNormLayerBiases(</span>
+						&quot;batch_normalization_&quot; + initialComponentIndex + &quot;_beta0&quot;, 384))
+<span class="nc" id="L69">				.withMean(weightsLoader.getBatchNormLayerMean(</span>
+						&quot;batch_normalization_&quot; + initialComponentIndex + &quot;_moving_mean0&quot;, 384))
+<span class="nc" id="L71">				.withVariance(weightsLoader.getBatchNormLayerVariance(</span>
+						&quot;batch_normalization_&quot; + initialComponentIndex + &quot;_moving_variance0&quot;, 384))
+<span class="nc" id="L73">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L74">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L75">				.withConnectionToNeurons(new Neurons3D(17, 17, 384, false))</span>
+<span class="nc" id="L76">				.withActivationFunction(&quot;relu_&quot; + initialComponentIndex, ActivationFunctionType.getBaseType(ActivationFunctionBaseType.RELU), new ActivationFunctionProperties()).endPath().withPath()</span>
+<span class="nc" id="L77">				.withConvolutionalAxons(&quot;conv2d_&quot; + (initialComponentIndex + 1))</span>
+<span class="nc" id="L78">				.withConnectionWeights(weightsLoader.getConvolutionalLayerWeights(</span>
+						&quot;conv2d_&quot; + (initialComponentIndex + 1) + &quot;_kernel0&quot;, 1, 1, 1024, 192))
+<span class="nc" id="L80">				.withFilterSize(1, 1).withFilterCount(192).withSamePadding()</span>
+<span class="nc" id="L81">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L82">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L83">				.withConnectionToNeurons(new Neurons3D(17, 17, 192, false)).withBatchNormAxons(&quot;batch_normalization_&quot; + (initialComponentIndex + 1)).withBiasUnit()</span>
+<span class="nc" id="L84">				.withBeta(weightsLoader.getBatchNormLayerBiases(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 1) + &quot;_beta0&quot;, 192))
+<span class="nc" id="L86">				.withMean(weightsLoader.getBatchNormLayerMean(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 1) + &quot;_moving_mean0&quot;, 192))
+<span class="nc" id="L88">				.withVariance(weightsLoader.getBatchNormLayerVariance(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 1) + &quot;_moving_variance0&quot;, 192))
+<span class="nc" id="L90">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L91">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L92">				.withConnectionToNeurons(new Neurons3D(17, 17, 192, false))</span>
+<span class="nc" id="L93">				.withActivationFunction(&quot;relu_&quot; + (initialComponentIndex + 1), ActivationFunctionType.getBaseType(ActivationFunctionBaseType.RELU), new ActivationFunctionProperties())</span>
+<span class="nc" id="L94">				.withConvolutionalAxons(&quot;conv2d_&quot; + (initialComponentIndex + 2))</span>
+<span class="nc" id="L95">				.withConnectionWeights(weightsLoader.getConvolutionalLayerWeights(</span>
+						&quot;conv2d_&quot; + (initialComponentIndex + 2) + &quot;_kernel0&quot;, 7, 1, 192, 224))
+<span class="nc" id="L97">				.withFilterSize(7, 1).withFilterCount(224).withSamePadding()</span>
+<span class="nc" id="L98">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L99">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L100">				.withConnectionToNeurons(new Neurons3D(17, 17, 224, false)).withBatchNormAxons(&quot;batch_normalization_&quot; + (initialComponentIndex + 2)).withBiasUnit()</span>
+<span class="nc" id="L101">				.withBeta(weightsLoader.getBatchNormLayerBiases(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 2) + &quot;_beta0&quot;, 224))
+<span class="nc" id="L103">				.withMean(weightsLoader.getBatchNormLayerMean(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 2) + &quot;_moving_mean0&quot;, 224))
+<span class="nc" id="L105">				.withVariance(weightsLoader.getBatchNormLayerVariance(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 2) + &quot;_moving_variance0&quot;, 224))
+<span class="nc" id="L107">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L108">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L109">				.withConnectionToNeurons(new Neurons3D(17, 17, 224, false))</span>
+<span class="nc" id="L110">				.withActivationFunction(&quot;relu_&quot; + (initialComponentIndex + 2), ActivationFunctionType.getBaseType(ActivationFunctionBaseType.RELU), new ActivationFunctionProperties())</span>
+<span class="nc" id="L111">				.withConvolutionalAxons(&quot;conv2d_&quot; + (initialComponentIndex + 3))</span>
+<span class="nc" id="L112">				.withConnectionWeights(weightsLoader.getConvolutionalLayerWeights(</span>
+						&quot;conv2d_&quot; + (initialComponentIndex + 3) + &quot;_kernel0&quot;, 1, 7, 224, 256))
+<span class="nc" id="L114">				.withFilterSize(1, 7).withFilterCount(224).withSamePadding()</span>
+<span class="nc" id="L115">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L116">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L117">				.withConnectionToNeurons(new Neurons3D(17, 17, 256, false)).withBatchNormAxons(&quot;batch_normalization_&quot; + (initialComponentIndex + 3)).withBiasUnit()</span>
+<span class="nc" id="L118">				.withBeta(weightsLoader.getBatchNormLayerBiases(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 3) + &quot;_beta0&quot;, 256))
+<span class="nc" id="L120">				.withMean(weightsLoader.getBatchNormLayerMean(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 3) + &quot;_moving_mean0&quot;, 256))
+<span class="nc" id="L122">				.withVariance(weightsLoader.getBatchNormLayerVariance(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 3) + &quot;_moving_variance0&quot;, 256))
+<span class="nc" id="L124">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L125">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L126">				.withConnectionToNeurons(new Neurons3D(17, 17, 256, false))</span>
+<span class="nc" id="L127">				.withActivationFunction(&quot;relu_&quot; + (initialComponentIndex + 3), ActivationFunctionType.getBaseType(ActivationFunctionBaseType.RELU), new ActivationFunctionProperties()).endPath().withPath()</span>
+<span class="nc" id="L128">				.withConvolutionalAxons(&quot;conv2d_&quot; + (initialComponentIndex + 4))</span>
+<span class="nc" id="L129">				.withConnectionWeights(weightsLoader.getConvolutionalLayerWeights(</span>
+						&quot;conv2d_&quot; + (initialComponentIndex + 4) + &quot;_kernel0&quot;, 1, 1, 1024, 192))
+<span class="nc" id="L131">				.withFilterSize(1, 1).withFilterCount(192).withSamePadding()</span>
+<span class="nc" id="L132">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L133">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L134">				.withConnectionToNeurons(new Neurons3D(17, 17, 192, false)).withBatchNormAxons(&quot;batch_normalization_&quot; + (initialComponentIndex + 4)).withBiasUnit()</span>
+<span class="nc" id="L135">				.withBeta(weightsLoader.getBatchNormLayerBiases(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 4) + &quot;_beta0&quot;, 192))
+<span class="nc" id="L137">				.withMean(weightsLoader.getBatchNormLayerMean(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 4) + &quot;_moving_mean0&quot;, 192))
+<span class="nc" id="L139">				.withVariance(weightsLoader.getBatchNormLayerVariance(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 4) + &quot;_moving_variance0&quot;, 192))
+<span class="nc" id="L141">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L142">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L143">				.withConnectionToNeurons(new Neurons3D(17, 17, 192, false))</span>
+<span class="nc" id="L144">				.withActivationFunction(&quot;relu_&quot; + (initialComponentIndex + 4), ActivationFunctionType.getBaseType(ActivationFunctionBaseType.RELU), new ActivationFunctionProperties())</span>
+<span class="nc" id="L145">				.withConvolutionalAxons(&quot;conv2d_&quot; + (initialComponentIndex + 5))</span>
+<span class="nc" id="L146">				.withConnectionWeights(weightsLoader.getConvolutionalLayerWeights(</span>
+						&quot;conv2d_&quot; + (initialComponentIndex + 5) + &quot;_kernel0&quot;, 1, 7, 192, 192))
+<span class="nc" id="L148">				.withFilterSize(1, 7).withFilterCount(192).withSamePadding()</span>
+<span class="nc" id="L149">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L150">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L151">				.withConnectionToNeurons(new Neurons3D(17, 17, 192, false)).withBatchNormAxons(&quot;batch_normalization_&quot; + (initialComponentIndex + 5)).withBiasUnit()</span>
+<span class="nc" id="L152">				.withBeta(weightsLoader.getBatchNormLayerBiases(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 5) + &quot;_beta0&quot;, 192))
+<span class="nc" id="L154">				.withMean(weightsLoader.getBatchNormLayerMean(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 5) + &quot;_moving_mean0&quot;, 192))
+<span class="nc" id="L156">				.withVariance(weightsLoader.getBatchNormLayerVariance(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 5) + &quot;_moving_variance0&quot;, 192))
+<span class="nc" id="L158">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L159">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L160">				.withConnectionToNeurons(new Neurons3D(17, 17, 192, false))</span>
+<span class="nc" id="L161">				.withActivationFunction(&quot;relu_&quot; + (initialComponentIndex + 5), ActivationFunctionType.getBaseType(ActivationFunctionBaseType.RELU), new ActivationFunctionProperties())</span>
+<span class="nc" id="L162">				.withConvolutionalAxons(&quot;conv2d_&quot; + (initialComponentIndex + 6))</span>
+<span class="nc" id="L163">				.withConnectionWeights(weightsLoader.getConvolutionalLayerWeights(</span>
+						&quot;conv2d_&quot; + (initialComponentIndex + 6) + &quot;_kernel0&quot;, 7, 1, 192, 224))
+<span class="nc" id="L165">				.withFilterSize(7, 1).withFilterCount(224).withSamePadding()</span>
+<span class="nc" id="L166">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L167">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L168">				.withConnectionToNeurons(new Neurons3D(17, 17, 224, false)).withBatchNormAxons(&quot;batch_normalization_&quot; + (initialComponentIndex + 6)).withBiasUnit()</span>
+<span class="nc" id="L169">				.withBeta(weightsLoader.getBatchNormLayerBiases(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 6) + &quot;_beta0&quot;, 224))
+<span class="nc" id="L171">				.withMean(weightsLoader.getBatchNormLayerMean(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 6) + &quot;_moving_mean0&quot;, 224))
+<span class="nc" id="L173">				.withVariance(weightsLoader.getBatchNormLayerVariance(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 6) + &quot;_moving_variance0&quot;, 224))
+<span class="nc" id="L175">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L176">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L177">				.withConnectionToNeurons(new Neurons3D(17, 17, 224, false))</span>
+<span class="nc" id="L178">				.withActivationFunction(&quot;relu_&quot; + (initialComponentIndex + 6), ActivationFunctionType.getBaseType(ActivationFunctionBaseType.RELU), new ActivationFunctionProperties())</span>
+<span class="nc" id="L179">				.withConvolutionalAxons(&quot;conv2d_&quot; + (initialComponentIndex + 7))</span>
+<span class="nc" id="L180">				.withConnectionWeights(weightsLoader.getConvolutionalLayerWeights(</span>
+						&quot;conv2d_&quot; + (initialComponentIndex + 7) + &quot;_kernel0&quot;, 1, 7, 224, 224))
+<span class="nc" id="L182">				.withFilterSize(1, 7).withFilterCount(224).withSamePadding()</span>
+<span class="nc" id="L183">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L184">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L185">				.withConnectionToNeurons(new Neurons3D(17, 17, 224, false)).withBatchNormAxons(&quot;batch_normalization_&quot; + (initialComponentIndex + 7)).withBiasUnit()</span>
+<span class="nc" id="L186">				.withBeta(weightsLoader.getBatchNormLayerBiases(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 7) + &quot;_beta0&quot;, 224))
+<span class="nc" id="L188">				.withMean(weightsLoader.getBatchNormLayerMean(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 7) + &quot;_moving_mean0&quot;, 224))
+<span class="nc" id="L190">				.withVariance(weightsLoader.getBatchNormLayerVariance(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 7) + &quot;_moving_variance0&quot;, 224))
+<span class="nc" id="L192">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L193">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L194">				.withConnectionToNeurons(new Neurons3D(17, 17, 224, false))</span>
+<span class="nc" id="L195">				.withActivationFunction(&quot;relu_&quot; + (initialComponentIndex + 7), ActivationFunctionType.getBaseType(ActivationFunctionBaseType.RELU), new ActivationFunctionProperties())</span>
+<span class="nc" id="L196">				.withConvolutionalAxons(&quot;conv2d_&quot; + (initialComponentIndex + 8))</span>
+<span class="nc" id="L197">				.withConnectionWeights(weightsLoader.getConvolutionalLayerWeights(</span>
+						&quot;conv2d_&quot; + (initialComponentIndex + 8) + &quot;_kernel0&quot;, 7, 1, 224, 256))
+<span class="nc" id="L199">				.withFilterSize(7, 1).withFilterCount(256).withSamePadding()</span>
+<span class="nc" id="L200">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L201">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L202">				.withConnectionToNeurons(new Neurons3D(17, 17, 256, false)).withBatchNormAxons(&quot;batch_normalization_&quot; + (initialComponentIndex + 8)).withBiasUnit()</span>
+<span class="nc" id="L203">				.withBeta(weightsLoader.getBatchNormLayerBiases(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 8) + &quot;_beta0&quot;, 256))
+<span class="nc" id="L205">				.withMean(weightsLoader.getBatchNormLayerMean(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 8) + &quot;_moving_mean0&quot;, 256))
+<span class="nc" id="L207">				.withVariance(weightsLoader.getBatchNormLayerVariance(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 8) + &quot;_moving_variance0&quot;, 256))
+<span class="nc" id="L209">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L210">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L211">				.withConnectionToNeurons(new Neurons3D(17, 17, 256, false))</span>
+<span class="nc" id="L212">				.withActivationFunction(&quot;relu_&quot; + (initialComponentIndex + 8), ActivationFunctionType.getBaseType(ActivationFunctionBaseType.RELU), new ActivationFunctionProperties()).endPath().withPath()</span>
+<span class="nc" id="L213">				.withAveragePoolingAxons(&quot;average_pooling_3&quot;).withFilterSize(3, 3).withStride(1, 1).withSamePadding()</span>
+<span class="nc" id="L214">				.withConnectionToNeurons(new Neurons3D(17, 17, 1024, false)).withConvolutionalAxons(&quot;conv2d_&quot; + (initialComponentIndex + 9))</span>
+<span class="nc" id="L215">				.withConnectionWeights(weightsLoader.getConvolutionalLayerWeights(</span>
+						&quot;conv2d_&quot; + (initialComponentIndex + 9) + &quot;_kernel0&quot;, 1, 1, 1024, 128))
+<span class="nc" id="L217">				.withFilterSize(1, 1).withFilterCount(128).withSamePadding()</span>
+<span class="nc" id="L218">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L219">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L220">				.withConnectionToNeurons(new Neurons3D(17, 17, 128, false)).withBatchNormAxons(&quot;batch_normalization_&quot; + (initialComponentIndex + 9)).withBiasUnit()</span>
+<span class="nc" id="L221">				.withBeta(weightsLoader.getBatchNormLayerBiases(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 9) + &quot;_beta0&quot;, 128))
+<span class="nc" id="L223">				.withMean(weightsLoader.getBatchNormLayerMean(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 9) + &quot;_moving_mean0&quot;, 128))
+<span class="nc" id="L225">				.withVariance(weightsLoader.getBatchNormLayerVariance(</span>
+						&quot;batch_normalization_&quot; + (initialComponentIndex + 9) + &quot;_moving_variance0&quot;, 128))
+<span class="nc" id="L227">				.withAxonsContextConfigurer(</span>
+<span class="nc" id="L228">						c -&gt; c.withFreezeOut(withFreezeOut))</span>
+<span class="nc" id="L229">				.withConnectionToNeurons(new Neurons3D(17, 17, 128, false))</span>
+<span class="nc" id="L230">				.withActivationFunction(&quot;relu_&quot; + (initialComponentIndex + 9), ActivationFunctionType.getBaseType(ActivationFunctionBaseType.RELU), new ActivationFunctionProperties()).endPath()</span>
+<span class="nc" id="L231">				.endParallelPaths(&quot;inception_b_concat_&quot; + inceptionBModuleIndex, PathCombinationStrategy.FILTER_CONCAT);</span>
+	}
+
+	@Override
+	public String getName() {
+<span class="nc" id="L236">		return &quot;inception_b_&quot; + inceptionBModuleIndex;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
