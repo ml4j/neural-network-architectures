@@ -1,7 +1,7 @@
 package org.ml4j.nn.architectures.inception.inceptionv4;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.ml4j.nn.components.DirectedComponentsContext;
 import org.ml4j.nn.components.NeuralComponent;
 import org.ml4j.nn.components.builders.componentsgraph.InitialComponentsGraphBuilder;
@@ -35,7 +35,7 @@ public abstract class InceptionV4DefinitionTestBase<T extends NeuralComponent<?>
 		InitialComponentsGraphBuilder<T> componentGraph = session.buildComponentGraph().startWith(inceptionV4Definition);
 			
 		// Assert that we now have a component graph.
-		Assert.assertNotNull(componentGraph);
+		Assertions.assertNotNull(componentGraph);
 		
 		// Run additional assertions
 		runAssertionsOnCreatedComponentGraph(inceptionV4Definition, componentGraph);

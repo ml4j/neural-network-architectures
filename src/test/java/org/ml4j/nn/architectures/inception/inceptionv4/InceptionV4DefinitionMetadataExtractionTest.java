@@ -2,7 +2,7 @@ package org.ml4j.nn.architectures.inception.inceptionv4;
 
 import java.util.List;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.ml4j.nn.components.ComponentMetadata;
 import org.ml4j.nn.components.ComponentMetadataFactory;
 import org.ml4j.nn.components.builders.componentsgraph.InitialComponentsGraphBuilder;
@@ -36,7 +36,7 @@ public class InceptionV4DefinitionMetadataExtractionTest extends InceptionV4Defi
 		
 		List<ComponentMetadata> sequentialComponents = componentGraph.getComponents();
 		
-		Assert.assertEquals(31, sequentialComponents.size());
+		Assertions.assertEquals(31, sequentialComponents.size());
 		
 		for (ComponentMetadata component : sequentialComponents) {
 			LOGGER.debug(component.toString());

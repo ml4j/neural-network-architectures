@@ -2,7 +2,7 @@ package org.ml4j.nn.architectures.yolo.yolov2;
 
 import java.util.List;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.ml4j.Matrix;
 import org.ml4j.MatrixFactory;
 import org.ml4j.jblas.JBlasRowMajorMatrixFactory;
@@ -48,8 +48,8 @@ public class YOLOv2DefinitionTest extends YOLOv2DefinitionTestBase<DefaultChaina
 			InitialComponents3DGraphBuilder<DefaultChainableDirectedComponent<?, ?>> componentGraph) {
 		
 		List<DefaultChainableDirectedComponent<?, ?>> sequentialComponents = componentGraph.getComponents();
-		
-		Assert.assertEquals(49, sequentialComponents.size());
+
+		Assertions.assertEquals(49, sequentialComponents.size());
 	
 		int index = 0;
 	
@@ -69,18 +69,18 @@ public class YOLOv2DefinitionTest extends YOLOv2DefinitionTestBase<DefaultChaina
 		NeuronsActivation input = new NeuronsActivationImpl(yoloV2Definition.getInputNeurons(), inputMatrix, NeuronsActivationFormat.ROWS_SPAN_FEATURE_SET);
 	
 		DefaultChainableDirectedComponentActivation output = componentChain.forwardPropagate(input, mockDirectedComponentsContext);
-		
-		Assert.assertNotNull(output);
-		
-		Assert.assertNotNull(output.getOutput());
+
+		Assertions.assertNotNull(output);
+
+		Assertions.assertNotNull(output.getOutput());
 
 		Matrix outputMatrix = output.getOutput().getActivations(matrixFactory);
-		
-		Assert.assertNotNull(outputMatrix);
 
-		
-		Assert.assertEquals(batchSize, outputMatrix.getColumns());
-		Assert.assertEquals(expectedOutputFeatureCount, outputMatrix.getRows());
+		Assertions.assertNotNull(outputMatrix);
+
+
+		Assertions.assertEquals(batchSize, outputMatrix.getColumns());
+		Assertions.assertEquals(expectedOutputFeatureCount, outputMatrix.getRows());
 
 		
 	}

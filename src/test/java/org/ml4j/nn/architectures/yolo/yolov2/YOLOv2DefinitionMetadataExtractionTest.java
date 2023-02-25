@@ -2,7 +2,7 @@ package org.ml4j.nn.architectures.yolo.yolov2;
 
 import java.util.List;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.ml4j.nn.components.ComponentMetadata;
 import org.ml4j.nn.components.ComponentMetadataFactory;
 import org.ml4j.nn.components.builders.componentsgraph.InitialComponents3DGraphBuilder;
@@ -35,8 +35,8 @@ public class YOLOv2DefinitionMetadataExtractionTest extends YOLOv2DefinitionTest
 			InitialComponents3DGraphBuilder<ComponentMetadata> componentGraph) {
 		
 		List<ComponentMetadata> sequentialComponents = componentGraph.getComponents();
-		
-		Assert.assertEquals(49, sequentialComponents.size());
+
+		Assertions.assertEquals(49, sequentialComponents.size());
 		
 		for (ComponentMetadata component : sequentialComponents) {
 			LOGGER.debug(component.toString());

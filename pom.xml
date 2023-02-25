@@ -17,37 +17,12 @@
 	<distributionManagement>
 	</distributionManagement>
 	<repositories>
-		<repository>
-			<id>ml4j-snapshots</id>
-			<url>https://raw.githubusercontent.com/ml4j/mvn-repository/master/snapshots</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>ml4j-releases</id>
-			<url>https://raw.githubusercontent.com/ml4j/mvn-repository/master/releases</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.ml4j</groupId>
 			<artifactId>ml4j-sessions-api</artifactId>
 			<version>2.0.0.RC1</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ml4j</groupId>
@@ -62,39 +37,16 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.26</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.ml4j</groupId>
 			<artifactId>ml4j-sessions-impl</artifactId>
 			<version>2.0.0-SNAPSHOT</version>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>ch.qos.logback</groupId>
-					<artifactId>logback-classic</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.ml4j</groupId>
 			<artifactId>ml4j-mock-components</artifactId>
 			<version>2.0.0-SNAPSHOT</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>3.1.0</version>
 		</dependency>
 	</dependencies>
 </project>
