@@ -1,8 +1,0 @@
-org/ml4j/nn/architectures/inception/inceptionv4/InceptionV4DefinitionTestBase.class
-org/ml4j/nn/components/ComponentMetadataFactory.class
-org/ml4j/nn/architectures/inception/inceptionv4/InceptionV4DefinitionTest.class
-org/ml4j/nn/architectures/yolo/yolov2/YOLOv2DefinitionMetadataExtractionTest.class
-org/ml4j/nn/architectures/inception/inceptionv4/InceptionV4DefinitionMetadataExtractionTest.class
-org/ml4j/nn/architectures/yolo/yolov2/YOLOv2DefinitionTestBase.class
-org/ml4j/nn/components/ComponentMetadata.class
-org/ml4j/nn/architectures/yolo/yolov2/YOLOv2DefinitionTest.class
